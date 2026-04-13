@@ -9,8 +9,14 @@ fn main() {
     let current_ip = get_ip_address();
     match current_ip {
         Ok(ip) => println!("IP: {}", ip),
-        Err(_) => println!("No IP detected")
+        Err(_) => println!("No IP detected"),
     }
+
+    let (os_name, arch, kernel_version, os_version) = get_os_info();
+    println!("OS Name: {}", os_name);
+    println!("Architecture: {}", arch);
+    println!("Kernel Version: {}", kernel_version);
+    println!("OS Version: {}", os_version);
 }
 
 fn get_shell_info() -> (String, String) {
@@ -41,7 +47,7 @@ fn get_current_dir() -> String {
     let current_dir = std::env::current_dir();
     match current_dir {
         Ok(path_buff) => path_buff.display().to_string(),
-        Err(e) => e.to_string()
+        Err(e) => e.to_string(),
     }
 }
 
@@ -50,4 +56,29 @@ fn get_ip_address() -> Result<String, std::io::Error> {
     socket.connect("8.8.8.8:80")?;
     let addr = socket.local_addr()?;
     Ok(addr.ip().to_string())
+}
+
+fn get_os_info() -> (&'static str, &'static str, String, String) {
+    let os_name = std::env::consts::OS;
+    let arch = std::env::consts::ARCH;
+    let kernel_version = std::process::Command::new("uname").arg("-r").output();
+    let kernel_version_parsed = match kernel_version {
+        Ok(output) => String::from_utf8_lossy(&output.stdout).to_string(),
+        Err(e) => e.to_string(),
+    };
+
+    let os_version = get_os_version();
+
+    (os_name, arch, kernel_version_parsed, os_version)
+}
+
+#[cfg(target_os = "macos")]
+fn get_os_version() -> String {
+    let os_version = std::process::Command::new("sw_vers")
+        .arg("-productVersion")
+        .output();
+    match os_version {
+        Ok(output) => String::from_utf8_lossy(&output.stdout).to_string(),
+        Err(e) => e.to_string(),
+    }
 }

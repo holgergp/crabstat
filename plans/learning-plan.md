@@ -5,12 +5,13 @@ GitHub repo: hosted on user's personal GitHub.
 
 ## Session Context
 
-**Current state:** Phase 1 complete. Shell name + version detection working. Code extracted into functions with proper borrowing. CI pipeline set up with GitHub Actions (fmt, clippy, build, test). Starting Phase 2.
+**Current state:** Phase 2 in progress. Shell, current dir, and IP address working. No external dependencies yet. All code in single `main.rs`. CI pipeline active.
 
 **Current code structure:**
-- `src/main.rs` — single file with `main()`, `get_shell_info()`, `get_shell_name(&str)`, `get_shell_version(&str)`
-- `.github/workflows/ci.yml` — CI pipeline
-- Returns shell name (extracted from `SHELL` env var path) and shell version (via subprocess)
+- `src/main.rs` — single file with `main()`, `get_shell_info()`, `get_shell_name(&str)`, `get_shell_version(&str)`, `get_current_dir()`, `get_ip_address()`
+- `.github/workflows/ci.yml` — CI pipeline (fmt, clippy, build, test)
+- `get_ip_address()` returns `Result<String, std::io::Error>` — uses UDP socket trick, cross-platform
+- Other functions return plain `String` with inline error handling
 
 **Teaching approach:** User writes all code. I explain concepts, review code, help debug compiler errors. Do not write implementation code unless explicitly asked.
 
@@ -20,12 +21,17 @@ GitHub repo: hosted on user's personal GitHub.
 - Ownership and moves (hit "value used after move" and fixed it)
 - Borrowing with `&` (refactored functions from `String` to `&str` params)
 - `Result` and `Option` handling: `unwrap`, `unwrap_or`, `unwrap_or_else`, `match`
+- The `?` operator for propagating errors
+- `Result<T, E>` as return type
 - Closures: `|x| expr` syntax
 - `std::process::Command` for subprocesses
 - `String::from_utf8_lossy` for bytes → string
+- `std::env::current_dir()` and `PathBuf`
+- `std::net::UdpSocket` for local IP detection
+- `::` (path separator) vs `.` (method call)
+- Single quotes (char) vs double quotes (string)
 - `cargo run`, `cargo build`, `cargo fmt`, `cargo clippy`
-
-**Open clippy suggestion:** Change `&String` params to `&str` in `get_shell_name` and `get_shell_version` — user may have already applied this.
+- Implicit returns (last expression without semicolon)
 
 ## Concepts Map (Rust ↔ TypeScript/JVM)
 
@@ -81,8 +87,8 @@ GitHub repo: hosted on user's personal GitHub.
 - [ ] OS name and version (`std::env::consts::OS`, `std::env::consts::ARCH`)
 - [ ] Hostname
 - [ ] Username
-- [ ] Current directory (`std::env::current_dir()`, learn `PathBuf`)
-- [ ] IP address (network programming or subprocess)
+- [x] Current directory (`std::env::current_dir()`, learn `PathBuf`)
+- [x] IP address (`std::net::UdpSocket` trick, cross-platform, no dependencies)
 
 ### Concepts to learn
 - **Structs**: Define custom types, `impl` blocks for methods
