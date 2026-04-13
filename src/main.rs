@@ -85,5 +85,5 @@ fn get_os_version() -> String {
 
 #[cfg(target_os = "linux")]
 fn get_os_version() -> String {
-   todo!("not yet implemented")
+    todo!("not yet implemented")
 }
