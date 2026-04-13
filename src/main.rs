@@ -17,6 +17,12 @@ fn main() {
     println!("Architecture: {}", arch);
     println!("Kernel Version: {}", kernel_version);
     println!("OS Version: {}", os_version);
+
+    let hostname = get_hostname();
+    println!("Hostname: {}", hostname);
+
+    let username = get_username();
+    println!("User: {}", username);
 }
 
 fn get_shell_info() -> (String, String) {
@@ -83,7 +89,7 @@ fn get_os_version() -> String {
         .arg("-productVersion")
         .output();
     match os_version {
-        Ok(output) => String::from_utf8_lossy(&output.stdout).to_string(),
+        Ok(output) => String::from_utf8_lossy(&output.stdout).trim().to_string(),
         Err(e) => e.to_string(),
     }
 }
@@ -107,4 +113,16 @@ fn parse_release_document_to_pretty_name() -> String {
             .to_string(),
         Err(e) => e.to_string(),
     }
+}
+
+fn get_hostname() -> String {
+    let hostname = std::process::Command::new("hostname").output();
+    match hostname {
+        Ok(output) => String::from_utf8_lossy(&output.stdout).trim().to_string(),
+        Err(e) => e.to_string(),
+    }
+}
+
+fn get_username() -> String {
+    std::env::var("USER").unwrap_or_else(|_| "unknown".to_string())
 }
