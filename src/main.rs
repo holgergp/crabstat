@@ -13,12 +13,12 @@ fn get_shell_info() -> (String, String) {
     (shell_name.to_string(), shell_version)
 }
 
-fn get_shell_name(shell_path: &String) -> String {
+fn get_shell_name(shell_path: &str) -> String {
     shell_path.rsplit('/').next().unwrap_or("none").to_string()
 }
 
-fn get_shell_version(shell_path: &String) -> String {
-    let shell_version = std::process::Command::new(&shell_path)
+fn get_shell_version(shell_path: &str) -> String {
+    let shell_version = std::process::Command::new(shell_path)
         .arg("--version")
         .output();
 
