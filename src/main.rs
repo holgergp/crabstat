@@ -1,7 +1,9 @@
 fn main() {
     let (shell_name, shell_version) = get_shell_info();
     println!("Shell: {}", shell_name);
-    println!("Shell Version: {}", shell_version)
+    println!("Shell Version: {}", shell_version);
+    let current_dir = get_current_dir();
+    print!("Current Dir: {}", current_dir)
 }
 
 fn get_shell_info() -> (String, String) {
@@ -10,7 +12,7 @@ fn get_shell_info() -> (String, String) {
 
     let shell_version = get_shell_version(&shell_path);
 
-    (shell_name.to_string(), shell_version)
+    (shell_name, shell_version)
 }
 
 fn get_shell_name(shell_path: &str) -> String {
@@ -25,5 +27,13 @@ fn get_shell_version(shell_path: &str) -> String {
     match shell_version {
         Ok(output) => String::from_utf8_lossy(&output.stdout).to_string(),
         Err(e) => e.to_string(),
+    }
+}
+
+fn get_current_dir() -> String {
+    let current_dir = std::env::current_dir();
+    match current_dir {
+        Ok(path_buff) => path_buff.display().to_string(),
+        Err(e) => e.to_string()
     }
 }
