@@ -1,37 +1,67 @@
-fn main() {
-    let (shell_name, shell_version) = get_shell_info();
-    println!("Shell: {}", shell_name);
-    println!("Shell Version: {}", shell_version);
-
-    let current_dir = get_current_dir();
-    println!("Current Dir: {}", current_dir);
-
-    let current_ip = get_ip_address();
-    match current_ip {
-        Ok(ip) => println!("IP: {}", ip),
-        Err(_) => println!("No IP detected"),
-    }
-
-    let (os_name, arch, kernel_version, os_version) = get_os_info();
-    println!("OS Name: {}", os_name);
-    println!("Architecture: {}", arch);
-    println!("Kernel Version: {}", kernel_version);
-    println!("OS Version: {}", os_version);
-
-    let hostname = get_hostname();
-    println!("Hostname: {}", hostname);
-
-    let username = get_username();
-    println!("User: {}", username);
+struct SystemInfo {
+    shell: ShellInfo,
+    current_dir: String,
+    current_ip: String,
+    os: OSInfo,
+    hostname: String,
+    username: String,
+}
+struct ShellInfo {
+    name: String,
+    version: String,
 }
 
-fn get_shell_info() -> (String, String) {
+struct OSInfo {
+    os_name: String,
+    arch: String,
+    kernel_version: String,
+    os_version: String,
+}
+fn main() {
+    let info = get_system_info();
+    println!("Shell: {}", info.shell.name);
+    println!("Shell Version: {}", info.shell.version);
+    println!("Current Dir: {}", info.current_dir);
+    println!("IP: {}", info.current_ip);
+    println!("OS Name: {}", info.os.os_name);
+    println!("Architecture: {}", info.os.arch);
+    println!("Kernel Version: {}", info.os.kernel_version);
+    println!("OS Version: {}", info.os.os_version);
+    println!("Hostname: {}", info.hostname);
+    println!("User: {}", info.username);
+}
+
+fn get_system_info() -> SystemInfo {
+    let shell = get_shell_info();
+    let current_dir = get_current_dir();
+    let current_ip = get_ip_address();
+    let current_ip_parsed = match current_ip {
+        Ok(ip) => ip,
+        Err(_) => "No IP detected".to_string(),
+    };
+    let os_info = get_os_info();
+    let hostname: String = get_hostname();
+    let username: String = get_username();
+    SystemInfo {
+        shell,
+        current_dir,
+        current_ip: current_ip_parsed,
+        os: os_info,
+        hostname,
+        username,
+    }
+}
+
+fn get_shell_info() -> ShellInfo {
     let shell_path = std::env::var("SHELL").unwrap_or_else(|_| "unknown".to_string());
     let shell_name = get_shell_name(&shell_path);
 
     let shell_version = get_shell_version(&shell_path);
 
-    (shell_name, shell_version)
+    ShellInfo {
+        name: shell_name,
+        version: shell_version,
+    }
 }
 
 fn get_shell_name(shell_path: &str) -> String {
@@ -69,7 +99,7 @@ fn get_ip_address() -> Result<String, std::io::Error> {
     Ok(addr.ip().to_string())
 }
 
-fn get_os_info() -> (&'static str, &'static str, String, String) {
+fn get_os_info() -> OSInfo {
     let os_name = std::env::consts::OS;
     let arch = std::env::consts::ARCH;
     let kernel_version = std::process::Command::new("uname").arg("-r").output();
@@ -80,7 +110,12 @@ fn get_os_info() -> (&'static str, &'static str, String, String) {
 
     let os_version = get_os_version();
 
-    (os_name, arch, kernel_version_parsed, os_version)
+    OSInfo {
+        os_name: os_name.to_string(),
+        arch: arch.to_string(),
+        kernel_version: kernel_version_parsed,
+        os_version,
+    }
 }
 
 #[cfg(target_os = "macos")]
