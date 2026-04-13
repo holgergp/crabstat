@@ -84,6 +84,18 @@ fn get_os_version() -> String {
 }
 
 #[cfg(target_os = "linux")]
-fn get_os_version() -> String {
-    todo!("not yet implemented")
+fn get_os_version() -> String {}
+
+fn parse_release_document_to_pretty_name() -> String {
+    let content = std::fs::read_to_string("/etc/os-release");
+    match content {
+        Ok(text) => text
+            .lines()
+            .find(|line| line.starts_with("PRETTY_NAME="))
+            .map(|line| line.strip_prefix("PRETTY_NAME=").unwrap_or(line))
+            .map(|val| val.trim_matches('"'))
+            .unwrap_or("unknown")
+            .to_string(),
+        Err(e) => e.to_string(),
+    }
 }
