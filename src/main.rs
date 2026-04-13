@@ -38,7 +38,12 @@ fn get_shell_version(shell_path: &str) -> String {
         .output();
 
     match shell_version {
-        Ok(output) => String::from_utf8_lossy(&output.stdout).to_string(),
+        Ok(output) => String::from_utf8_lossy(&output.stdout)
+            .lines()
+            .next()
+            .unwrap_or("unknown")
+            .trim()
+            .to_string(),
         Err(e) => e.to_string(),
     }
 }
@@ -63,7 +68,7 @@ fn get_os_info() -> (&'static str, &'static str, String, String) {
     let arch = std::env::consts::ARCH;
     let kernel_version = std::process::Command::new("uname").arg("-r").output();
     let kernel_version_parsed = match kernel_version {
-        Ok(output) => String::from_utf8_lossy(&output.stdout).to_string(),
+        Ok(output) => String::from_utf8_lossy(&output.stdout).trim().to_string(),
         Err(e) => e.to_string(),
     };
 
@@ -97,6 +102,7 @@ fn parse_release_document_to_pretty_name() -> String {
             .map(|line| line.strip_prefix("PRETTY_NAME=").unwrap_or(line))
             .map(|val| val.trim_matches('"'))
             .unwrap_or("unknown")
+            .trim()
             .to_string(),
         Err(e) => e.to_string(),
     }
