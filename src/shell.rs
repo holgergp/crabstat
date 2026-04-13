@@ -1,3 +1,5 @@
+use std::{io::Error, process::Output};
+
 pub struct ShellInfo {
     pub name: String,
     pub version: String,
@@ -23,8 +25,11 @@ fn get_shell_version(shell_path: &str) -> String {
     let shell_version = std::process::Command::new(shell_path)
         .arg("--version")
         .output();
+    parse_shell_version(shell_version)
+}
 
-    match shell_version {
+fn parse_shell_version(shell_version_string: Result<Output, Error>) -> String {
+    match shell_version_string {
         Ok(output) => String::from_utf8_lossy(&output.stdout)
             .lines()
             .next()
