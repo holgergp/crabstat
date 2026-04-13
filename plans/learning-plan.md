@@ -5,12 +5,18 @@ GitHub repo: hosted on user's personal GitHub.
 
 ## Session Context
 
-**Current state:** Phase 2 in progress. Shell, current dir, and IP address working. No external dependencies yet. All code in single `main.rs`. CI pipeline active.
+**Current state:** Phase 2 complete. All system info fields working. Refactored to structs and modules. No external dependencies. CI pipeline active.
 
 **Current code structure:**
-- `src/main.rs` — single file with `main()`, `get_shell_info()`, `get_shell_name(&str)`, `get_shell_version(&str)`, `get_current_dir()`, `get_ip_address()`
-- `.github/workflows/ci.yml` — CI pipeline (fmt, clippy, build, test)
+- `src/main.rs` — mod declarations + main (prints SystemInfo fields)
+- `src/system.rs` — `SystemInfo` struct, `get_system_info()` orchestrator
+- `src/shell.rs` — `ShellInfo` struct, shell name/version detection
+- `src/os.rs` — `OsInfo` struct, OS/arch/kernel/version with conditional compilation
+- `src/network.rs` — IP address (UDP socket), hostname
+- `src/user.rs` — username, current directory
+- `.github/workflows/ci.yml` — CI pipeline (fmt, clippy, build, test, cargo run)
 - `get_ip_address()` returns `Result<String, std::io::Error>` — uses UDP socket trick, cross-platform
+- `get_os_version()` uses conditional compilation (`#[cfg(target_os)]`) for macOS/Linux
 - Other functions return plain `String` with inline error handling
 
 **Teaching approach:** User writes all code. I explain concepts, review code, help debug compiler errors. Do not write implementation code unless explicitly asked.
@@ -32,6 +38,14 @@ GitHub repo: hosted on user's personal GitHub.
 - Single quotes (char) vs double quotes (string)
 - `cargo run`, `cargo build`, `cargo fmt`, `cargo clippy`
 - Implicit returns (last expression without semicolon)
+- Structs: defining, nesting, field shorthand
+- Conditional compilation with `#[cfg(target_os)]`
+- `std::fs::read_to_string` for file reading
+- Iterator chaining: `.lines()`, `.find()`, `.map()`, `.starts_with()`, `.strip_prefix()`
+- Naming conventions: `snake_case` functions, `CamelCase` types (not `ALLCAPS`)
+- When to use `'static` lifetimes vs just `.to_string()`
+- Modules: `mod`, `pub`, `use crate::`, sibling module access
+- Visibility: everything private by default, `pub` on structs, fields, and functions
 
 ## Concepts Map (Rust ↔ TypeScript/JVM)
 
@@ -84,14 +98,15 @@ GitHub repo: hosted on user's personal GitHub.
 ## Phase 2: Expand System Info 🔜
 
 ### Features to add
-- [ ] OS name and version (`std::env::consts::OS`, `std::env::consts::ARCH`)
-- [ ] Hostname
-- [ ] Username
+- [x] OS name and version (`std::env::consts::OS`, `std::env::consts::ARCH`)
+- [x] Hostname
+- [x] Username
 - [x] Current directory (`std::env::current_dir()`, learn `PathBuf`)
 - [x] IP address (`std::net::UdpSocket` trick, cross-platform, no dependencies)
 
 ### Concepts to learn
-- **Structs**: Define custom types, `impl` blocks for methods
+- ~~**Structs**: Define custom types~~ ✅ (SystemInfo, ShellInfo, OsInfo)
+- **`impl` blocks**: Methods on structs
 - **Dependencies**: Adding crates to `Cargo.toml` (`sysinfo`, `clap`)
 - **Iterators**: Zero-cost, chainable `.map().filter()` compiled away
 - **Lifetimes**: The `'a` annotation — will encounter naturally
@@ -111,7 +126,7 @@ GitHub repo: hosted on user's personal GitHub.
 
 - [ ] Formatted, colored output (like `neofetch` / `fastfetch`)
 - [ ] Implement `Display` trait for custom types
-- [ ] Split code into modules: `src/info/`, `src/display/`
+- ~~Split code into modules~~ ✅ (done in Phase 2)
 
 ### Concepts to learn
 - **Traits**: Implement `Display` (like `toString()`)
