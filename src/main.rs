@@ -2,7 +2,7 @@ struct SystemInfo {
     shell: ShellInfo,
     current_dir: String,
     current_ip: String,
-    os: OSInfo,
+    os: OsInfo,
     hostname: String,
     username: String,
 }
@@ -11,12 +11,13 @@ struct ShellInfo {
     version: String,
 }
 
-struct OSInfo {
+struct OsInfo {
     os_name: String,
     arch: String,
     kernel_version: String,
     os_version: String,
 }
+
 fn main() {
     let info = get_system_info();
     println!("Shell: {}", info.shell.name);
@@ -99,7 +100,7 @@ fn get_ip_address() -> Result<String, std::io::Error> {
     Ok(addr.ip().to_string())
 }
 
-fn get_os_info() -> OSInfo {
+fn get_os_info() -> OsInfo {
     let os_name = std::env::consts::OS;
     let arch = std::env::consts::ARCH;
     let kernel_version = std::process::Command::new("uname").arg("-r").output();
@@ -110,7 +111,7 @@ fn get_os_info() -> OSInfo {
 
     let os_version = get_os_version();
 
-    OSInfo {
+    OsInfo {
         os_name: os_name.to_string(),
         arch: arch.to_string(),
         kernel_version: kernel_version_parsed,
