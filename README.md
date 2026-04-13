@@ -8,7 +8,7 @@ I am learning a little bit of rust. And I need something concrete to work on. I 
 Use `cargo run`. It has a little differentiation between Linux and MacOS though.
 
 ## Example output
-
+<code>
 Shell: fish
 Shell Version: fish, version 4.6.0
 Current Dir: /Users/h.grosse-plankermann/development/sideprojects/rust/rust-cli/crabstat
@@ -19,3 +19,4 @@ Kernel Version: 25.4.0
 OS Version: 26.4.1
 Hostname: MAC241002-2.local
 User: h.grosse-plankermann
+<code>
