@@ -2,8 +2,15 @@ fn main() {
     let (shell_name, shell_version) = get_shell_info();
     println!("Shell: {}", shell_name);
     println!("Shell Version: {}", shell_version);
+
     let current_dir = get_current_dir();
-    print!("Current Dir: {}", current_dir)
+    println!("Current Dir: {}", current_dir);
+
+    let current_ip = get_ip_address();
+    match current_ip {
+        Ok(ip) => println!("IP: {}", ip),
+        Err(_) => println!("No IP detected")
+    }
 }
 
 fn get_shell_info() -> (String, String) {
@@ -36,4 +43,11 @@ fn get_current_dir() -> String {
         Ok(path_buff) => path_buff.display().to_string(),
         Err(e) => e.to_string()
     }
+}
+
+fn get_ip_address() -> Result<String, std::io::Error> {
+    let socket = std::net::UdpSocket::bind("0.0.0.0:0")?;
+    socket.connect("8.8.8.8:80")?;
+    let addr = socket.local_addr()?;
+    Ok(addr.ip().to_string())
 }
