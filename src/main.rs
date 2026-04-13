@@ -93,6 +93,7 @@ fn get_os_version() -> String {
     parse_release_document_to_pretty_name()
 }
 
+#[cfg(target_os = "linux")]
 fn parse_release_document_to_pretty_name() -> String {
     let content = std::fs::read_to_string("/etc/os-release");
     match content {

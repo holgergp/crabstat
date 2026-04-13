@@ -97,6 +97,11 @@ GitHub repo: hosted on user's personal GitHub.
 - **Lifetimes**: The `'a` annotation — will encounter naturally
 - **Async**: `tokio`, `async`/`.await`, `join!` for parallel info gathering
 
+### CLI arguments (planned)
+- [ ] Add `clap` for argument parsing
+- [ ] Flags to show only specific info (e.g., `--shell`, `--ip`, `--os`)
+- [ ] Learn derive macros through clap's `#[derive(Parser)]`
+
 ### Key crates
 - `sysinfo` — cross-platform system info (CPU, RAM, disks, processes)
 - `clap` — CLI argument parsing
