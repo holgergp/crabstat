@@ -34,3 +34,13 @@ fn get_shell_version(shell_path: &str) -> String {
         Err(e) => e.to_string(),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_shell_name() {
+        assert_eq!("fish", get_shell_name("/opt/homebrew/bin/fish"))
+    }
+}
