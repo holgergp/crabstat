@@ -84,7 +84,9 @@ fn get_os_version() -> String {
 }
 
 #[cfg(target_os = "linux")]
-fn get_os_version() -> String {}
+fn get_os_version() -> String {
+    parse_release_document_to_pretty_name()
+}
 
 fn parse_release_document_to_pretty_name() -> String {
     let content = std::fs::read_to_string("/etc/os-release");
