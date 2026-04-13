@@ -1,6 +1,31 @@
 # Crabstat — Rust Learning Plan
 
 A blazing fast CLI tool that displays system information.
+GitHub repo: hosted on user's personal GitHub.
+
+## Session Context
+
+**Current state:** Phase 1 complete. Shell name + version detection working. Code extracted into functions with proper borrowing. CI pipeline set up with GitHub Actions (fmt, clippy, build, test). Starting Phase 2.
+
+**Current code structure:**
+- `src/main.rs` — single file with `main()`, `get_shell_info()`, `get_shell_name(&str)`, `get_shell_version(&str)`
+- `.github/workflows/ci.yml` — CI pipeline
+- Returns shell name (extracted from `SHELL` env var path) and shell version (via subprocess)
+
+**Teaching approach:** User writes all code. I explain concepts, review code, help debug compiler errors. Do not write implementation code unless explicitly asked.
+
+**What the user has learned so far:**
+- Basic syntax: `fn`, `let`, `println!`, `match`
+- `String` vs `&str` (owned vs borrowed)
+- Ownership and moves (hit "value used after move" and fixed it)
+- Borrowing with `&` (refactored functions from `String` to `&str` params)
+- `Result` and `Option` handling: `unwrap`, `unwrap_or`, `unwrap_or_else`, `match`
+- Closures: `|x| expr` syntax
+- `std::process::Command` for subprocesses
+- `String::from_utf8_lossy` for bytes → string
+- `cargo run`, `cargo build`, `cargo fmt`, `cargo clippy`
+
+**Open clippy suggestion:** Change `&String` params to `&str` in `get_shell_name` and `get_shell_version` — user may have already applied this.
 
 ## Concepts Map (Rust ↔ TypeScript/JVM)
 
