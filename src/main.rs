@@ -82,3 +82,9 @@ fn get_os_version() -> String {
         Err(e) => e.to_string(),
     }
 }
+
+#[cfg(target_os = "linux")]
+fn get_os_version() -> String {
+    // read /etc/os-release or use `lsb_release -d`
+    // try it!
+}
