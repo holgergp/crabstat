@@ -85,6 +85,5 @@ fn get_os_version() -> String {
 
 #[cfg(target_os = "linux")]
 fn get_os_version() -> String {
-    // read /etc/os-release or use `lsb_release -d`
-    // try it!
+   todo!("not yet implemented")
 }
