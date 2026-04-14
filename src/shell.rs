@@ -1,8 +1,14 @@
-use std::{io::Error, process::Output};
+use std::{fmt, io::Error, process::Output};
 
 pub struct ShellInfo {
     pub name: String,
     pub version: String,
+}
+
+impl fmt::Display for ShellInfo {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{} ({})", self.name, self.version)
+    }
 }
 
 pub fn get_shell_info() -> ShellInfo {

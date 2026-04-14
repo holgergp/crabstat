@@ -6,8 +6,7 @@ pub fn print_system_info(info: &SystemInfo) {
     println!("╔══════════════════╗");
     println!("║  🦀 crabstat     ║");
     println!("╚══════════════════╝");
-    print_row("Shell", &info.shell.name);
-    print_row("Shell Version", &info.shell.version);
+    print_row("Shell", &info.shell.to_string());
     print_row("Current Dir", &info.current_dir);
     print_info_row("IP", &info.network.ip);
     print_row("OS Name", &info.os.os_name);
