@@ -5,17 +5,18 @@ GitHub repo: hosted on user's personal GitHub.
 
 ## Session Context
 
-**Current state:** Phase 3 in progress. Colored output, modular code, custom enum with impl block. One external dependency (`colored`). CI pipeline active. Pre-commit hooks via `cargo-husky`.
+**Current state:** Most core concepts covered. Colored output, modular code, custom enum with impl block, CLI arguments with clap, parallel info gathering with threads. Dependencies: `colored`, `clap`. CI pipeline active. Pre-commit hooks via `cargo-husky`.
 
 **Current code structure:**
-- `src/main.rs` — mod declarations + main (3 lines)
-- `src/system.rs` — `SystemInfo` struct, `get_system_info()` orchestrator
-- `src/shell.rs` — `ShellInfo` struct, shell name/version detection, unit tests
-- `src/os.rs` — `OsInfo` struct, OS/arch/kernel/version with conditional compilation, unit tests
-- `src/network.rs` — `NetworkInfo` struct, IP address (UDP socket), hostname, uses `InfoValue`
+- `src/main.rs` — mod declarations, parses CLI args, calls system + display
+- `src/cli.rs` — `Cli` struct with `#[derive(Parser)]`, `show_all()` method
+- `src/system.rs` — `SystemInfo` struct, `get_system_info()` with `std::thread` parallelism
+- `src/shell.rs` — `ShellInfo` struct with `Display` impl, unit tests
+- `src/os.rs` — `OsInfo` struct, conditional compilation, unit tests
+- `src/network.rs` — `NetworkInfo` struct, uses `InfoValue`, IP via UDP socket
 - `src/user.rs` — username, current directory
-- `src/types.rs` — `InfoValue` enum with `impl` block (`from_result` constructor)
-- `src/display.rs` — `print_system_info`, colored output, handles `InfoValue` variants
+- `src/types.rs` — `InfoValue` enum with `impl` block (`from_result`, `Display`)
+- `src/display.rs` — colored output, handles CLI flags and `InfoValue` variants
 - `.github/workflows/ci.yml` — CI pipeline (fmt, clippy, build, test, cargo run)
 
 **Teaching approach:** User writes all code. I explain concepts, review code, help debug compiler errors. Do not write implementation code unless explicitly asked.
@@ -53,6 +54,10 @@ GitHub repo: hosted on user's personal GitHub.
 - Pre-commit hooks with `cargo-husky`
 - Traits: `impl Display for T`, `write!` macro, `&mut` references
 - `Display` gives `.to_string()` for free
+- Derive macros: `#[derive(Parser)]` for clap CLI args
+- `clap`: `#[command]`, `#[arg(long)]`, auto-generated `--help`
+- `std::thread`: `spawn`, closures with `||`, `.join().unwrap()`
+- Concurrency: parallel info gathering with OS threads
 
 ## Concepts Map (Rust ↔ TypeScript/JVM)
 
@@ -157,10 +162,9 @@ GitHub repo: hosted on user's personal GitHub.
 
 ## Phase 5: Async
 
-- [ ] Add `tokio` runtime
-- [ ] Gather system info concurrently with `tokio::join!`
-- [ ] Add spinners (`indicatif`) while gathering info
-- [ ] Learn `Pin`, `Send`, `Sync`
+- [x] Concurrency with `std::thread` — parallel info gathering (chose threads over tokio, simpler and sufficient)
+- [ ] ~~Add spinners (`indicatif`)~~ — skipped, gathering too fast to see
+- [ ] `tokio` / async — save for a project that genuinely needs it (HTTP server, etc.)
 
 ### Key difference from TS/Node
 No built-in async runtime — you choose one (`tokio` is standard).

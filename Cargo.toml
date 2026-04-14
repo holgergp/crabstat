@@ -11,3 +11,7 @@ clap = { version = "4.6.0", features = ["derive"] }
 version = "1.5.0"
 default-features = false
 features = ["precommit-hook", "run-cargo-fmt", "run-cargo-clippy"]
+
+[[bin]]
+name = "cs"
+path = "src/main.rs"
