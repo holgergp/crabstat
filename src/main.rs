@@ -6,6 +6,8 @@ mod user;
 use colored::*;
 fn main() {
     let info = system::get_system_info();
+    println!("🦀 {}", "crabstat".bold().cyan());
+    println!("{}", "─".repeat(30));
     print_row("Shell", &info.shell.name);
     print_row("Shell Version", &info.shell.version);
     print_row("Current Dir", &info.current_dir);
