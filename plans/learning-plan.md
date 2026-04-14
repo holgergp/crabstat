@@ -120,9 +120,10 @@ GitHub repo: hosted on user's personal GitHub.
 - **Async**: `tokio`, `async`/`.await`, `join!` for parallel info gathering
 
 ### CLI arguments (planned)
-- [ ] Add `clap` for argument parsing
-- [ ] Flags to show only specific info (e.g., `--shell`, `--ip`, `--os`)
-- [ ] Learn derive macros through clap's `#[derive(Parser)]`
+- [x] Add `clap` for argument parsing
+- [x] Flags to show only specific info (`--shell`, `--net`, `--os`)
+- [x] `--help` (free from clap, uses `///` doc comments as help text)
+- [x] Learn derive macros through clap's `#[derive(Parser)]`
 
 ### Key crates
 - `sysinfo` — cross-platform system info (CPU, RAM, disks, processes)
@@ -180,7 +181,7 @@ No built-in async runtime — you choose one (`tokio` is standard).
 - [ ] **Generics** — `fn process<T>(item: T)`, you've seen `Result<T, E>` but haven't written your own
 - [ ] **Error handling (proper)** — `anyhow`/`thiserror` crates, custom error types, replacing `e.to_string()` patterns
 - [x] **Lifetimes (explicit)** — encountered with `value_or` returning from two sources
-- [ ] **Derive macros** — `#[derive(Debug, Clone, PartialEq)]`, code generation at compile time
+- [x] **Derive macros** — learned through clap's `#[derive(Parser)]`
 - [ ] **Iterators (deeper)** — write your own iterator, `.collect()` into different types
 
 ### Optional — useful but can wait
