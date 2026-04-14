@@ -44,7 +44,7 @@ fn get_os_version() -> String {
 fn parse_release_document_to_pretty_name() -> String {
     let content = std::fs::read_to_string("/etc/os-release");
     match content {
-        Ok(text) => parse_release_document_contents(text),
+        Ok(text) => parse_release_document_contents(&text),
         Err(e) => e.to_string(),
     }
 }
