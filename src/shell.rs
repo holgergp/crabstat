@@ -36,13 +36,8 @@ fn parse_shell_version(shell_version_string: Result<Output, Error>) -> String {
 }
 
 fn parse_shell_version_output(raw: &str) -> String {
-    raw.lines()
-        .next()
-        .unwrap_or("unknown")
-        .trim()
-        .to_string()
+    raw.lines().next().unwrap_or("unknown").trim().to_string()
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -56,12 +51,18 @@ mod tests {
     #[test]
     fn test_parse_shell_version_output_on_fish() {
         let shell_version_string = "fish, version 4.6.0";
-        assert_eq!(shell_version_string, parse_shell_version_output(shell_version_string))
+        assert_eq!(
+            shell_version_string,
+            parse_shell_version_output(shell_version_string)
+        )
     }
 
     #[test]
     fn test_parse_shell_version_output_on_bash() {
         let shell_version_string = "GNU bash, version 3.2.57(1)-release (arm64-apple-darwin25)\nCopyright (C) 2007 Free Software Foundation, Inc.";
-        assert_eq!("GNU bash, version 3.2.57(1)-release (arm64-apple-darwin25)", parse_shell_version_output(shell_version_string))
+        assert_eq!(
+            "GNU bash, version 3.2.57(1)-release (arm64-apple-darwin25)",
+            parse_shell_version_output(shell_version_string)
+        )
     }
 }
