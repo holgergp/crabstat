@@ -50,7 +50,7 @@ fn parse_release_document_to_pretty_name() -> String {
 }
 
 #[allow(dead_code)]
-fn parse_release_document_contents(text: String) -> String {
+fn parse_release_document_contents(text: &str) -> String {
     text.lines()
         .find(|line| line.starts_with("PRETTY_NAME="))
         .map(|line| line.strip_prefix("PRETTY_NAME=").unwrap_or(line))
@@ -63,7 +63,10 @@ fn parse_release_document_contents(text: String) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    const OS_RELEASE: &str = "\
+
+    #[test]
+    fn test_parse_release_document_contents() {
+        const OS_RELEASE: &str = "\
 NAME=\"Fedora Linux\"\n\
 VERSION=\"41 (Workstation Edition)\"\n\
 ID=fedora\n\
@@ -85,12 +88,53 @@ REDHAT_SUPPORT_TICKET_URL=\"https://access.redhat.com/support/cases/#/case/new\"
 SUPPORT_END=\"2025-05-13\"\n\
 VARIANT=\"Workstation Edition\"\n\
 VARIANT_ID=workstation";
-
-    #[test]
-    fn test_parse_release_document_contents() {
         assert_eq!(
             "Fedora Linux 41 (Workstation Edition)",
-            parse_release_document_contents(OS_RELEASE.to_string())
+            parse_release_document_contents(OS_RELEASE)
+        )
+    }
+
+    #[test]
+    fn test_parse_release_document_missing_prettyname() {
+        const OS_RELEASE: &str = "\
+NAME=\"Fedora Linux\"\n\
+ANSI_COLOR=\"0;38;2;60;110;180\"\n\
+LOGO=fedora-logo-icon\n\
+VARIANT_ID=workstation";
+        assert_eq!("unknown", parse_release_document_contents(OS_RELEASE))
+    }
+
+    #[test]
+    fn test_parse_release_document_empty_file() {
+        const OS_RELEASE: &str = "";
+        assert_eq!("unknown", parse_release_document_contents(OS_RELEASE))
+    }
+
+    #[test]
+    fn test_parse_release_document_additional_quote() {
+        const OS_RELEASE: &str = "\
+NAME=\"Fedora Linux\"\n\
+ANSI_COLOR=\"0;38;2;60;110;180\"\n\
+PRETTY_NAME=\"\"Fedora Linux 41 (Workstation Edition)\"\"\n\
+LOGO=fedora-logo-icon\n\
+VARIANT_ID=workstation";
+        assert_eq!(
+            "Fedora Linux 41 (Workstation Edition)",
+            parse_release_document_contents(OS_RELEASE)
+        )
+    }
+
+    #[test]
+    fn test_parse_release_document_no_quote() {
+        const OS_RELEASE: &str = "\
+NAME=\"Fedora Linux\"\n\
+ANSI_COLOR=\"0;38;2;60;110;180\"\n\
+PRETTY_NAME=Fedora Linux 41 (Workstation Edition)\n\
+LOGO=fedora-logo-icon\n\
+VARIANT_ID=workstation";
+        assert_eq!(
+            "Fedora Linux 41 (Workstation Edition)",
+            parse_release_document_contents(OS_RELEASE)
         )
     }
 }
