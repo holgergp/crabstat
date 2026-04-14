@@ -40,7 +40,12 @@ fn parse_shell_version(shell_version_string: Result<Output, Error>) -> String {
 }
 
 fn parse_shell_version_output(raw: &str) -> String {
-    raw.lines().next().unwrap_or("unknown").trim().to_string()
+    let line = raw.lines().next().unwrap_or("").trim();
+    if line.is_empty() {
+        "unknown".to_string()
+    } else {
+        line.to_string()
+    }
 }
 
 #[cfg(test)]
@@ -83,5 +88,17 @@ mod tests {
             "GNU bash, version 3.2.57(1)-release (arm64-apple-darwin25)",
             parse_shell_version_output(shell_version_string)
         )
+    }
+
+    #[test]
+    fn test_parse_shell_version_output_empty_string() {
+        let shell_version_string = "";
+        assert_eq!("unknown", parse_shell_version_output(shell_version_string))
+    }
+
+    #[test]
+    fn test_parse_shell_version_output_whitespace_string() {
+        let shell_version_string = " ";
+        assert_eq!("unknown", parse_shell_version_output(shell_version_string))
     }
 }
