@@ -135,7 +135,8 @@ GitHub repo: hosted on user's personal GitHub.
 
 ## Phase 4: Testing
 
-- [ ] Unit tests (in-file `#[cfg(test)]` modules)
+- [x] Unit tests (in-file `#[cfg(test)]` modules)
+- [ ] Edge case tests (empty strings, missing slashes, whitespace, multiline output)
 - [ ] Integration tests (`tests/` directory)
 - [ ] Async tests with `#[tokio::test]`
 

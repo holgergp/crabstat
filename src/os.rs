@@ -40,18 +40,55 @@ fn get_os_version() -> String {
     parse_release_document_to_pretty_name()
 }
 
-#[cfg(target_os = "linux")]
 fn parse_release_document_to_pretty_name() -> String {
     let content = std::fs::read_to_string("/etc/os-release");
     match content {
-        Ok(text) => text
-            .lines()
-            .find(|line| line.starts_with("PRETTY_NAME="))
-            .map(|line| line.strip_prefix("PRETTY_NAME=").unwrap_or(line))
-            .map(|val| val.trim_matches('"'))
-            .unwrap_or("unknown")
-            .trim()
-            .to_string(),
+        Ok(text) => parse_release_document_contents(text),
         Err(e) => e.to_string(),
+    }
+}
+
+fn parse_release_document_contents(text: String) -> String {
+    text.lines()
+        .find(|line| line.starts_with("PRETTY_NAME="))
+        .map(|line| line.strip_prefix("PRETTY_NAME=").unwrap_or(line))
+        .map(|val| val.trim_matches('"'))
+        .unwrap_or("unknown")
+        .trim()
+        .to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    const OS_RELEASE: &str = "\
+NAME=\"Fedora Linux\"\n\
+VERSION=\"41 (Workstation Edition)\"\n\
+ID=fedora\n\
+VERSION_ID=41\n\
+VERSION_CODENAME=\"\"\n\
+PLATFORM_ID=\"platform:f41\"\n\
+PRETTY_NAME=\"Fedora Linux 41 (Workstation Edition)\"\n\
+ANSI_COLOR=\"0;38;2;60;110;180\"\n\
+LOGO=fedora-logo-icon\n\
+CPE_NAME=\"cpe:/o:fedoraproject:fedora:41\"\n\
+DEFAULT_HOSTNAME=\"fedora\"\n\
+HOME_URL=\"https://fedoraproject.org/\"\n\
+DOCUMENTATION_URL=\"https://docs.fedoraproject.org/en-US/fedora/f41/system-administrators-guide/\"\n\
+SUPPORT_URL=\"https://ask.fedoraproject.org/\"\n\
+BUG_REPORT_URL=\"https://bugzilla.redhat.com/\"\n\
+REDHAT_BUGZILLA_PRODUCT=\"Fedora\"\n\
+REDHAT_BUGZILLA_PRODUCT_VERSION=41\n\
+REDHAT_SUPPORT_TICKET_URL=\"https://access.redhat.com/support/cases/#/case/new\"\n\
+SUPPORT_END=\"2025-05-13\"\n\
+VARIANT=\"Workstation Edition\"\n\
+VARIANT_ID=workstation";
+
+    #[test]
+    fn test_parse_release_document_contents() {
+        assert_eq!(
+            "Fedora Linux 41 (Workstation Edition)",
+            parse_release_document_contents(OS_RELEASE.to_string())
+        )
     }
 }
