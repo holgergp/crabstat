@@ -3,6 +3,7 @@ mod network;
 mod os;
 mod shell;
 mod system;
+mod types;
 mod user;
 
 fn main() {

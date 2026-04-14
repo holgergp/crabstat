@@ -1,5 +1,7 @@
+use crate::types::InfoValue;
+
 pub struct NetworkInfo {
-    pub ip: String,
+    pub ip: InfoValue,
     pub hostname: String,
 }
 
@@ -19,15 +21,9 @@ fn get_hostname() -> String {
 }
 
 pub fn get_network_info() -> NetworkInfo {
-    let ip = get_ip_address();
-    let current_ip_parsed = match ip {
-        Ok(ip) => ip,
-        Err(_) => "No IP detected".to_string(),
-    };
     let hostname = get_hostname();
-
     NetworkInfo {
-        ip: current_ip_parsed,
+        ip: InfoValue::from_result(get_ip_address(), "No IP detected"),
         hostname,
     }
 }

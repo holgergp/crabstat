@@ -5,19 +5,18 @@ GitHub repo: hosted on user's personal GitHub.
 
 ## Session Context
 
-**Current state:** Phase 2 complete. All system info fields working. Refactored to structs and modules. No external dependencies. CI pipeline active.
+**Current state:** Phase 3 in progress. Colored output, modular code, custom enum with impl block. One external dependency (`colored`). CI pipeline active. Pre-commit hooks via `cargo-husky`.
 
 **Current code structure:**
-- `src/main.rs` — mod declarations + main (prints SystemInfo fields)
+- `src/main.rs` — mod declarations + main (3 lines)
 - `src/system.rs` — `SystemInfo` struct, `get_system_info()` orchestrator
-- `src/shell.rs` — `ShellInfo` struct, shell name/version detection
-- `src/os.rs` — `OsInfo` struct, OS/arch/kernel/version with conditional compilation
-- `src/network.rs` — IP address (UDP socket), hostname
+- `src/shell.rs` — `ShellInfo` struct, shell name/version detection, unit tests
+- `src/os.rs` — `OsInfo` struct, OS/arch/kernel/version with conditional compilation, unit tests
+- `src/network.rs` — `NetworkInfo` struct, IP address (UDP socket), hostname, uses `InfoValue`
 - `src/user.rs` — username, current directory
+- `src/types.rs` — `InfoValue` enum with `impl` block (`from_result` constructor)
+- `src/display.rs` — `print_system_info`, colored output, handles `InfoValue` variants
 - `.github/workflows/ci.yml` — CI pipeline (fmt, clippy, build, test, cargo run)
-- `get_ip_address()` returns `Result<String, std::io::Error>` — uses UDP socket trick, cross-platform
-- `get_os_version()` uses conditional compilation (`#[cfg(target_os)]`) for macOS/Linux
-- Other functions return plain `String` with inline error handling
 
 **Teaching approach:** User writes all code. I explain concepts, review code, help debug compiler errors. Do not write implementation code unless explicitly asked.
 
@@ -46,6 +45,12 @@ GitHub repo: hosted on user's personal GitHub.
 - When to use `'static` lifetimes vs just `.to_string()`
 - Modules: `mod`, `pub`, `use crate::`, sibling module access
 - Visibility: everything private by default, `pub` on structs, fields, and functions
+- Enums with data: defining `InfoValue` with `Available(String)` / `Unavailable(String)`
+- `impl` blocks: methods on enums/structs (`from_result` constructor)
+- Explicit lifetimes: `'a` annotations when compiler can't infer them
+- `matches!` macro
+- External dependencies: adding crates with `cargo add`
+- Pre-commit hooks with `cargo-husky`
 
 ## Concepts Map (Rust ↔ TypeScript/JVM)
 
@@ -137,7 +142,7 @@ GitHub repo: hosted on user's personal GitHub.
 ## Phase 4: Testing
 
 - [x] Unit tests (in-file `#[cfg(test)]` modules)
-- [ ] Edge case tests (empty strings, missing slashes, whitespace, multiline output)
+- [x] Edge case tests (empty strings, missing slashes, whitespace, multiline output)
 - [ ] Integration tests (`tests/` directory)
 - [ ] Async tests with `#[tokio::test]`
 
@@ -164,6 +169,25 @@ No built-in async runtime — you choose one (`tokio` is standard).
 - [ ] Cross-compilation (Linux/Windows from macOS)
 - [ ] GitHub Actions release pipeline
 - [ ] Publish to crates.io with `cargo publish`
+
+## Rust Concepts Still to Cover
+
+### Must — core language, will encounter everywhere
+- [x] **Enums with data** — `InfoValue` enum with `Available`/`Unavailable` variants
+- [ ] **Traits** — implement `Display` for your structs, understand trait bounds
+- [ ] **Generics** — `fn process<T>(item: T)`, you've seen `Result<T, E>` but haven't written your own
+- [ ] **Error handling (proper)** — `anyhow`/`thiserror` crates, custom error types, replacing `e.to_string()` patterns
+- [x] **Lifetimes (explicit)** — encountered with `value_or` returning from two sources
+- [ ] **Derive macros** — `#[derive(Debug, Clone, PartialEq)]`, code generation at compile time
+- [ ] **Iterators (deeper)** — write your own iterator, `.collect()` into different types
+
+### Optional — useful but can wait
+- [ ] **Smart pointers** — `Box`, `Rc`, `Arc` for complex ownership
+- [ ] **Enums as state machines** — model app states so invalid states are unrepresentable
+- [ ] **Serialization with `serde`** — JSON output for piping to other tools
+- [ ] **Closures (deeper)** — `Fn`, `FnMut`, `FnOnce` traits, capturing variables
+- [ ] **Pattern matching (advanced)** — destructuring, guards, nested patterns
+- [ ] **Unsafe Rust** — raw pointers, FFI, when safe Rust isn't enough
 
 ## Recommended Resources
 
