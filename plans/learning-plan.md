@@ -51,6 +51,8 @@ GitHub repo: hosted on user's personal GitHub.
 - `matches!` macro
 - External dependencies: adding crates with `cargo add`
 - Pre-commit hooks with `cargo-husky`
+- Traits: `impl Display for T`, `write!` macro, `&mut` references
+- `Display` gives `.to_string()` for free
 
 ## Concepts Map (Rust ↔ TypeScript/JVM)
 
@@ -174,7 +176,7 @@ No built-in async runtime — you choose one (`tokio` is standard).
 
 ### Must — core language, will encounter everywhere
 - [x] **Enums with data** — `InfoValue` enum with `Available`/`Unavailable` variants
-- [ ] **Traits** — implement `Display` for your structs, understand trait bounds
+- [x] **Traits** — implemented `Display` for `InfoValue` and `ShellInfo`, understand `write!`, `&mut`, `fmt::Result`
 - [ ] **Generics** — `fn process<T>(item: T)`, you've seen `Result<T, E>` but haven't written your own
 - [ ] **Error handling (proper)** — `anyhow`/`thiserror` crates, custom error types, replacing `e.to_string()` patterns
 - [x] **Lifetimes (explicit)** — encountered with `value_or` returning from two sources
