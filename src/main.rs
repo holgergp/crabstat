@@ -3,17 +3,21 @@ mod os;
 mod shell;
 mod system;
 mod user;
-
+use colored::*;
 fn main() {
     let info = system::get_system_info();
-    println!("Shell: {}", info.shell.name);
-    println!("Shell Version: {}", info.shell.version);
-    println!("Current Dir: {}", info.current_dir);
-    println!("IP: {}", info.network.ip);
-    println!("OS Name: {}", info.os.os_name);
-    println!("Architecture: {}", info.os.arch);
-    println!("Kernel Version: {}", info.os.kernel_version);
-    println!("OS Version: {}", info.os.os_version);
-    println!("Hostname: {}", info.network.hostname);
-    println!("User: {}", info.username);
+    print_row("Shell", &info.shell.name);
+    print_row("Shell Version", &info.shell.version);
+    print_row("Current Dir", &info.current_dir);
+    print_row("IP", &info.network.ip);
+    print_row("OS Name", &info.os.os_name);
+    print_row("Architecture", &info.os.arch);
+    print_row("Kernel Version", &info.os.kernel_version);
+    print_row("OS Version", &info.os.os_version);
+    print_row("Hostname", &info.network.hostname);
+    print_row("User", &info.username);
+}
+
+fn print_row(label: &str, value: &str) {
+    println!("{:<15}: {}", label.blue().bold(), value);
 }

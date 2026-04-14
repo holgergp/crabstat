@@ -150,6 +150,7 @@ GitHub repo: hosted on user's personal GitHub.
 
 - [ ] Add `tokio` runtime
 - [ ] Gather system info concurrently with `tokio::join!`
+- [ ] Add spinners (`indicatif`) while gathering info
 - [ ] Learn `Pin`, `Send`, `Sync`
 
 ### Key difference from TS/Node
