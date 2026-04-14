@@ -124,7 +124,8 @@ GitHub repo: hosted on user's personal GitHub.
 
 ## Phase 3: Make It Pretty
 
-- [ ] Formatted, colored output (like `neofetch` / `fastfetch`)
+- [x] Formatted, colored output (like `neofetch` / `fastfetch`)
+- [ ] Dark and light terminal mode support
 - [ ] Implement `Display` trait for custom types
 - ~~Split code into modules~~ ✅ (done in Phase 2)
 
