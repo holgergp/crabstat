@@ -18,7 +18,11 @@ pub fn get_shell_info() -> ShellInfo {
 }
 
 fn get_shell_name(shell_path: &str) -> String {
-    shell_path.rsplit('/').next().unwrap_or("none").to_string()
+    shell_path
+        .rsplit('/')
+        .find(|s| !s.is_empty())
+        .unwrap_or("")
+        .to_string()
 }
 
 fn get_shell_version(shell_path: &str) -> String {
@@ -44,8 +48,23 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_get_shell_name() {
+    fn test_get_shell_name_happy_path() {
         assert_eq!("fish", get_shell_name("/opt/homebrew/bin/fish"))
+    }
+
+    #[test]
+    fn test_get_shell_name_trailing_slash() {
+        assert_eq!("fish", get_shell_name("/opt/homebrew/bin/fish/"))
+    }
+
+    #[test]
+    fn test_get_shell_name_no_slash() {
+        assert_eq!("fish", get_shell_name("fish"))
+    }
+
+    #[test]
+    fn test_get_shell_name_empty_string() {
+        assert_eq!("", get_shell_name(""))
     }
 
     #[test]
